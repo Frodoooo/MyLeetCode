@@ -1,0 +1,40 @@
+class Solution(object):
+    def merge(self, intervals):
+        """
+        :type intervals: List[List[int]]
+        :rtype: int
+        """
+        if(len(intervals) <= 1):return intervals
+        intervals = sorted(intervals,key=lambda x:(x[0],-x[1]))
+        covered = 0
+        left = intervals[0][0]
+        right = intervals[0][1]
+        i = 1
+        while(i < len(intervals)):
+            interval = intervals[i]
+            nextLeft = interval[0]
+            nextRight = interval[1]
+            #分三个情况
+            #case1：覆盖了下一个区间 ->covered加一
+            if(right >= nextRight):
+                intervals.pop(i)
+                i -= 1
+
+            #case2:部分重叠 -> 合并
+            elif(right >= nextLeft and right < nextRight):
+                right = nextRight
+                intervals.pop(i)
+                intervals.pop(i - 1)
+                intervals.insert(i - 1,[left,right])
+                i -= 1
+
+            #case3: 完全不相交：更新起终点
+            elif(right < nextLeft):
+                left = nextLeft
+                right = nextRight
+            i += 1
+        return intervals
+
+intervals = [[1,4],[3,6],[2,8]]
+mySolution = Solution()
+print(mySolution.merge(intervals))
